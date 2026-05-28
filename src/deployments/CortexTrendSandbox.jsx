@@ -1,303 +1,593 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Terminal, Key, Shield, Zap, RefreshCw, Send, CheckCircle2, AlertTriangle, Layers, DollarSign, Database } from 'lucide-react';
-import { usePortfolio } from '../context/PortfolioContext';
+import {
+  TrendingUp, TrendingDown, Zap, RefreshCw, Send, CheckCircle,
+  AlertCircle, BarChart2, Globe, Cpu, Heart, Lock, ChevronRight,
+  Copy, Check, Wifi, Activity, Layers, Star, ArrowUpRight
+} from 'lucide-react';
 
+/* ─────────────────────────────────────────────
+   Palette tokens — completely different from
+   the portfolio's cyan/black aesthetic
+───────────────────────────────────────────── */
+const C = {
+  bg:         '#0f0b1e',
+  surface:    '#17122b',
+  card:       '#1e1838',
+  border:     'rgba(139, 92, 246, 0.2)',
+  borderHov:  'rgba(139, 92, 246, 0.5)',
+  purple:     '#8b5cf6',
+  purpleGlow: 'rgba(139, 92, 246, 0.15)',
+  emerald:    '#10b981',
+  emeraldGlow:'rgba(16, 185, 129, 0.15)',
+  rose:       '#f43f5e',
+  amber:      '#f59e0b',
+  sky:        '#38bdf8',
+  text:       '#e2d9f3',
+  muted:      '#7c6fa0',
+  white:      '#fff',
+};
+
+/* ─── tiny reusable styled-tag ─── */
+const Badge = ({ color, children }) => (
+  <span style={{
+    display: 'inline-flex', alignItems: 'center', gap: 4,
+    padding: '2px 10px', borderRadius: 999,
+    fontSize: 11, fontWeight: 600, letterSpacing: '0.04em',
+    background: `${color}22`, color, border: `1px solid ${color}55`,
+  }}>{children}</span>
+);
+
+/* ─── icon → category badge ─── */
+const categoryMeta = {
+  Technology:     { icon: '⚡', color: C.purple },
+  Cybersecurity:  { icon: '🔒', color: C.rose },
+  Biomedical:     { icon: '🧬', color: C.emerald },
+  Infrastructure: { icon: '🏗️', color: C.amber },
+  Finance:        { icon: '💰', color: C.sky },
+  AI:             { icon: '🤖', color: C.purple },
+};
+
+/* ─── Trend card ─── */
+const TrendCard = ({ trend, delay }) => {
+  const meta = categoryMeta[trend.category] || { icon: '📊', color: C.purple };
+  const score = Math.round(trend.sentimentScore * 100);
+  const barW   = `${score}%`;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      style={{
+        background: C.card, border: `1px solid ${C.border}`,
+        borderRadius: 16, padding: '20px 22px',
+        display: 'flex', flexDirection: 'column', gap: 12,
+        position: 'relative', overflow: 'hidden',
+      }}
+    >
+      {/* faint purple orb behind */}
+      <div style={{
+        position: 'absolute', right: -30, top: -30,
+        width: 120, height: 120, borderRadius: '50%',
+        background: `radial-gradient(circle, ${meta.color}18 0%, transparent 70%)`,
+        pointerEvents: 'none',
+      }} />
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <span style={{ fontSize: 15, fontWeight: 700, color: C.white, lineHeight: 1.3 }}>
+            {meta.icon} {trend.topic}
+          </span>
+          <Badge color={meta.color}>{trend.category}</Badge>
+        </div>
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 4,
+          color: C.emerald, fontWeight: 700, fontSize: 14,
+        }}>
+          <TrendingUp size={14} />
+          {trend.volumeShift}
+        </div>
+      </div>
+
+      {/* Sentiment bar */}
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+          <span style={{ fontSize: 11, color: C.muted, letterSpacing: '0.04em' }}>SENTIMENT SCORE</span>
+          <span style={{ fontSize: 12, color: meta.color, fontWeight: 700 }}>{score}%</span>
+        </div>
+        <div style={{ height: 6, background: 'rgba(255,255,255,0.06)', borderRadius: 999 }}>
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: barW }}
+            transition={{ delay: delay + 0.2, duration: 0.8, ease: 'easeOut' }}
+            style={{ height: '100%', borderRadius: 999, background: `linear-gradient(90deg, ${meta.color}, ${meta.color}aa)` }}
+          />
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <span style={{ fontSize: 11, color: C.muted }}>Reliability</span>
+        <span style={{ fontSize: 12, color: C.emerald, fontWeight: 600 }}>{trend.reliabilityIndex}</span>
+      </div>
+    </motion.div>
+  );
+};
+
+/* ─── Stat tile ─── */
+const StatTile = ({ icon: Icon, label, value, color }) => (
+  <div style={{
+    background: C.card, border: `1px solid ${C.border}`,
+    borderRadius: 14, padding: '16px 20px',
+    display: 'flex', alignItems: 'center', gap: 14,
+  }}>
+    <div style={{
+      width: 40, height: 40, borderRadius: 10,
+      background: `${color}22`, display: 'flex', alignItems: 'center', justifyContent: 'center',
+    }}>
+      <Icon size={18} color={color} />
+    </div>
+    <div>
+      <div style={{ fontSize: 11, color: C.muted, marginBottom: 2, letterSpacing: '0.05em' }}>{label}</div>
+      <div style={{ fontSize: 17, fontWeight: 700, color: C.white }}>{value}</div>
+    </div>
+  </div>
+);
+
+/* ─────────────────────────────────────────────
+   MAIN COMPONENT
+───────────────────────────────────────────── */
 const CortexTrendSandbox = () => {
-  const { setCursorState, playSynthSound } = usePortfolio();
-  const [apiKey, setApiKey] = useState('');
+  const [apiKey, setApiKey]         = useState('');
+  const [copied, setCopied]         = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-  
-  // Endpoint selection
   const [selectedEndpoint, setSelectedEndpoint] = useState('GET /api/v1/trends');
-  const [requestBody, setRequestBody] = useState('{\n  "category": "all",\n  "sentimentFilter": "positive"\n}');
-  
-  // Terminal logs & output
-  const [terminalLogs, setTerminalLogs] = useState([
-    { id: 1, type: 'info', text: 'CORTEXTREND_API_DAEMON: v1.0.8 ONLINE' },
-    { id: 2, type: 'info', text: 'Ready for client authorization. Awaiting x-api-key...' }
-  ]);
-  const [apiResponse, setApiResponse] = useState(null);
-  const [isSending, setIsSending] = useState(false);
-  const [rateLimit, setRateLimit] = useState(5); // 5 free remaining
-  
-  // Dynamic trending datasets
-  const mockTrends = {
-    trends: [
-      { topic: "Generative AI Agents", category: "Technology", sentimentScore: 0.92, volumeShift: "+148%", reliabilityIndex: "98.7%" },
-      { topic: "Post-Quantum Cryptography", category: "Cybersecurity", sentimentScore: 0.84, volumeShift: "+89%", reliabilityIndex: "96.4%" },
-      { topic: "Volumetric Medical Computer Vision", category: "Biomedical", sentimentScore: 0.95, volumeShift: "+212%", reliabilityIndex: "99.1%" },
-      { topic: "Decentralized GPU Compute Pools", category: "Infrastructure", sentimentScore: 0.78, volumeShift: "+63%", reliabilityIndex: "92.5%" }
-    ],
-    metadata: {
-      scanTimestamp: new Date().toISOString(),
-      activeNodesScraped: 124,
-      totalAnalysedTokens: 4850900,
-      systemStatus: "NOMINAL"
-    }
+  const [isSending, setIsSending]   = useState(false);
+  const [trends, setTrends]         = useState(null);
+  const [rateLeft, setRateLeft]     = useState(5);
+  const [toast, setToast]           = useState(null);
+  const [tab, setTab]               = useState('playground'); // playground | docs
+
+  const mockTrends = [
+    { topic: "Generative AI Agents",            category: "Technology",     sentimentScore: 0.92, volumeShift: "+148%", reliabilityIndex: "98.7%" },
+    { topic: "Post-Quantum Cryptography",        category: "Cybersecurity",  sentimentScore: 0.84, volumeShift: "+89%",  reliabilityIndex: "96.4%" },
+    { topic: "Volumetric Medical CV",            category: "Biomedical",     sentimentScore: 0.95, volumeShift: "+212%", reliabilityIndex: "99.1%" },
+    { topic: "Decentralised GPU Compute Pools",  category: "Infrastructure", sentimentScore: 0.78, volumeShift: "+63%",  reliabilityIndex: "92.5%" },
+  ];
+
+  const showToast = (msg, type = 'success') => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 3500);
   };
 
   const handleGenerateKey = () => {
     setIsGenerating(true);
-    playSynthSound('click');
-    setTerminalLogs(prev => [...prev, { id: Date.now(), type: 'process', text: 'INITIALIZING AUTOGENERATION CIPHER...' }]);
-    
     setTimeout(() => {
-      const generated = 'ct_live_' + Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10);
-      setApiKey(generated);
+      const key = 'ct_live_' + Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10);
+      setApiKey(key);
       setIsGenerating(false);
-      playSynthSound('success');
-      setTerminalLogs(prev => [
-        ...prev, 
-        { id: Date.now() + 1, type: 'success', text: `TOKEN CREATED: ${generated.substring(0, 12)}...` },
-        { id: Date.now() + 2, type: 'info', text: 'Client authenticated. Rate Limit initialized: 5 requests/min.' }
-      ]);
+      showToast('API key generated! You have 5 free requests.', 'success');
     }, 1200);
   };
 
-  const handleSendRequest = () => {
-    if (!apiKey) {
-      playSynthSound('glitch');
-      setTerminalLogs(prev => [...prev, { id: Date.now(), type: 'error', text: 'FATAL: AUTHORIZATION FAILED. MISSING X-API-KEY HEADER.' }]);
-      return;
-    }
-    
-    if (rateLimit <= 0) {
-      playSynthSound('glitch');
-      setTerminalLogs(prev => [...prev, { id: Date.now(), type: 'error', text: 'RATE_LIMIT_EXCEEDED: Subscribe to Pro or Enterprise for unrestricted pipeline bandwidth.' }]);
-      return;
-    }
-    
-    setIsSending(true);
-    playSynthSound('click');
-    setTerminalLogs(prev => [...prev, { id: Date.now(), type: 'process', text: `TRANSMITTING ${selectedEndpoint} ENVELOPE...` }]);
-    
-    setTimeout(() => {
-      setRateLimit(prev => prev - 1);
-      setApiResponse(mockTrends);
-      setIsSending(false);
-      playSynthSound('success');
-      setTerminalLogs(prev => [
-        ...prev,
-        { id: Date.now() + 1, type: 'success', text: 'STATUS_CODE: 200 OK. Dynamic database segment mapped successfully.' },
-        { id: Date.now() + 2, type: 'info', text: `Bandwidth Rate Limit status: ${rateLimit - 1} / 5 allocations remaining.` }
-      ]);
-    }, 1000);
+  const handleCopy = () => {
+    if (!apiKey) return;
+    navigator.clipboard.writeText(apiKey).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
   };
 
+  const handleSendRequest = () => {
+    if (!apiKey) { showToast('Please generate an API key first.', 'error'); return; }
+    if (rateLeft <= 0) { showToast('Rate limit hit — 0 requests left. Upgrade to Pro ↗', 'error'); return; }
+    setIsSending(true);
+    setTimeout(() => {
+      setTrends(mockTrends);
+      setRateLeft(p => p - 1);
+      setIsSending(false);
+      showToast('200 OK — Trend data fetched successfully!', 'success');
+    }, 1100);
+  };
+
+  /* ── endpoints for docs tab ── */
+  const endpoints = [
+    { method: 'GET', path: '/api/v1/trends',    desc: 'Fetch top trending topics with sentiment scores.' },
+    { method: 'GET', path: '/api/v1/sentiment', desc: 'Get a weighted sentiment index for a given keyword.' },
+    { method: 'GET', path: '/api/v1/categories',desc: 'List all tracked topic categories.' },
+    { method: 'POST',path: '/api/v1/subscribe', desc: 'Register a webhook for real-time trend alerts.' },
+  ];
+
+  const methodColor = { GET: C.emerald, POST: C.amber, DELETE: C.rose };
+
+  /* ── layout ── */
   return (
-    <div style={{ padding: '4rem', color: '#00E6FF', height: '100vh', display: 'flex', flexDirection: 'column', overflowY: 'auto', background: 'radial-gradient(circle at center, rgba(0, 230, 255, 0.03) 0%, #000 80%)' }}>
-      
-      {/* 1. Header segment */}
-      <div style={{ borderBottom: '1px solid rgba(0,230,255,0.1)', paddingBottom: '1.5rem', marginBottom: '2rem' }}>
-        <h1 style={{ fontSize: '3rem', textShadow: '0 0 20px rgba(0, 230, 255, 0.4)', margin: 0 }}>CortexTrend <span style={{fontWeight: '300', color: '#fff'}}>Developer Hub</span></h1>
-        <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '1.1rem', margin: '0.5rem 0 0 0' }}>Autonomous Market Intelligence & Real-Time Trend Analytics API</p>
-      </div>
+    <div style={{
+      minHeight: '100vh', background: C.bg, color: C.text,
+      fontFamily: "'Inter', 'Plus Jakarta Sans', system-ui, sans-serif",
+      overflowY: 'auto',
+    }}>
+      {/* ── gradient top wash ── */}
+      <div style={{
+        position: 'fixed', top: 0, left: 0, right: 0, height: 400,
+        background: 'radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139,92,246,0.22) 0%, transparent 70%)',
+        pointerEvents: 'none', zIndex: 0,
+      }} />
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.8fr', gap: '2.5rem', flex: 1, minHeight: 0 }}>
-        
-        {/* Left Side: Developer Key Console & Endpoint config */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', overflowY: 'auto', paddingRight: '0.5rem' }}>
-          
-          {/* Key Manager Panel */}
-          <div style={{ background: 'rgba(0, 230, 255, 0.02)', border: '1px solid rgba(0, 230, 255, 0.15)', padding: '2rem', borderRadius: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-              <div style={{ background: 'rgba(0,230,255,0.1)', padding: '0.6rem', borderRadius: '6px' }}>
-                <Key size={20} />
+      <div style={{ position: 'relative', zIndex: 1, maxWidth: 1200, margin: '0 auto', padding: '0 24px 60px' }}>
+
+        {/* ═══════════ HEADER ═══════════ */}
+        <div style={{ padding: '40px 0 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: 10,
+                background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}>
+                <Activity size={18} color="#fff" />
               </div>
-              <h3 style={{ margin: 0, color: '#fff', fontSize: '1.3rem' }}>Authorization Gate</h3>
+              <span style={{ fontWeight: 800, fontSize: 22, color: C.white }}>CortexTrend AI</span>
+              <Badge color={C.emerald}>LIVE SANDBOX</Badge>
             </div>
-            
-            <p style={{ fontSize: '0.9rem', color: 'rgba(255,255,255,0.5)', lineHeight: '1.5', marginBottom: '1.5rem' }}>
-              Generate a sandbox authentication token to sign diagnostic headers and run live requests against the Trend Core.
+            <p style={{ color: C.muted, fontSize: 14, margin: 0 }}>
+              Autonomous Market Intelligence & Real-Time Trend Analytics Platform
             </p>
-
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-              <input
-                type="text"
-                readOnly
-                value={apiKey || 'NO_TOKEN_ACTIVATED'}
-                style={{
-                  flex: 1,
-                  background: 'rgba(0,0,0,0.6)',
-                  border: '1px solid rgba(0,230,255,0.2)',
-                  color: apiKey ? '#00E6FF' : 'rgba(255,255,255,0.2)',
-                  padding: '0.8rem 1rem',
-                  fontFamily: 'monospace',
-                  fontSize: '0.85rem',
-                  borderRadius: '6px',
-                  textAlign: 'center'
-                }}
-              />
-              <button
-                onClick={handleGenerateKey}
-                disabled={isGenerating}
-                onMouseEnter={() => setCursorState('hover')}
-                onMouseLeave={() => setCursorState('default')}
-                style={{
-                  padding: '0.8rem 1.5rem',
-                  background: isGenerating ? 'rgba(255,255,255,0.05)' : 'var(--color-neon-blue)',
-                  color: 'var(--color-bg)',
-                  border: 'none',
-                  borderRadius: '6px',
-                  fontFamily: 'monospace',
-                  fontSize: '0.85rem',
-                  fontWeight: 'bold',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                <RefreshCw size={14} className={isGenerating ? 'animate-spin' : ''} />
-                {isGenerating ? 'GENERATING...' : 'ACTIVATE'}
-              </button>
-            </div>
           </div>
 
-          {/* Request Composer */}
-          <div style={{ background: 'rgba(0, 230, 255, 0.02)', border: '1px solid rgba(0, 230, 255, 0.15)', padding: '2rem', borderRadius: '12px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-              <div style={{ background: 'rgba(0,230,255,0.1)', padding: '0.6rem', borderRadius: '6px' }}>
-                <Layers size={20} />
-              </div>
-              <h3 style={{ margin: 0, color: '#fff', fontSize: '1.3rem' }}>Request Composer</h3>
+          {/* Request meter */}
+          <div style={{
+            background: C.card, border: `1px solid ${C.border}`,
+            borderRadius: 12, padding: '12px 20px', textAlign: 'center', minWidth: 120,
+          }}>
+            <div style={{ fontSize: 24, fontWeight: 800, color: rateLeft > 0 ? C.purple : C.rose }}>
+              {rateLeft} / 5
             </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-              <div>
-                <label style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', display: 'block', marginBottom: '0.5rem', fontFamily: 'monospace' }}>API Endpoint Route</label>
-                <select
-                  value={selectedEndpoint}
-                  onChange={(e) => {
-                    setSelectedEndpoint(e.target.value);
-                    playSynthSound('hover');
-                  }}
-                  style={{
-                    width: '100%',
-                    background: 'rgba(0,0,0,0.8)',
-                    border: '1px solid rgba(0,230,255,0.2)',
-                    color: '#fff',
-                    padding: '0.8rem 1rem',
-                    borderRadius: '6px',
-                    fontFamily: 'monospace',
-                    fontSize: '0.85rem',
-                    outline: 'none'
-                  }}
-                >
-                  <option value="GET /api/v1/trends">GET /api/v1/trends (Retrieve Active Scrapes)</option>
-                  <option value="GET /api/v1/sentiment">GET /api/v1/sentiment (Calculate Sentiment Indices)</option>
-                </select>
-              </div>
-
-              {selectedEndpoint.startsWith('POST') && (
-                <div>
-                  <label style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', display: 'block', marginBottom: '0.5rem', fontFamily: 'monospace' }}>JSON Payload Body</label>
-                  <textarea
-                    value={requestBody}
-                    onChange={(e) => setRequestBody(e.target.value)}
-                    style={{
-                      width: '100%',
-                      height: '80px',
-                      background: 'rgba(0,0,0,0.8)',
-                      border: '1px solid rgba(0,230,255,0.2)',
-                      color: '#00E6FF',
-                      padding: '0.8rem',
-                      borderRadius: '6px',
-                      fontFamily: 'monospace',
-                      fontSize: '0.85rem',
-                      resize: 'none',
-                      outline: 'none'
-                    }}
-                  />
-                </div>
-              )}
-
-              <button
-                onClick={handleSendRequest}
-                disabled={isSending}
-                onMouseEnter={() => setCursorState('hover')}
-                onMouseLeave={() => setCursorState('default')}
-                style={{
-                  width: '100%',
-                  padding: '1rem',
-                  background: isSending ? 'rgba(255,255,255,0.05)' : 'rgba(0, 230, 255, 0.05)',
-                  border: '1px solid var(--color-neon-blue)',
-                  color: 'var(--color-neon-blue)',
-                  borderRadius: '6px',
-                  fontFamily: 'monospace',
-                  fontSize: '0.9rem',
-                  fontWeight: 'bold',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.8rem',
-                  transition: 'all 0.3s ease',
-                  boxShadow: '0 0 15px rgba(0,230,255,0.08)'
-                }}
-              >
-                <Send size={16} />
-                {isSending ? 'EXECUTING QUERIES...' : 'EXECUTE API REQUEST'}
-              </button>
-            </div>
+            <div style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>Free Requests Left</div>
           </div>
-
         </div>
 
-        {/* Right Side: Interactive Live API Console Log & JSON Response */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', height: '100%' }}>
-          
-          {/* Terminal Console Log */}
-          <div style={{ flex: 1.2, background: 'rgba(0,0,0,0.85)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '12px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div style={{ background: '#121212', padding: '0.8rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-              <Terminal size={16} className="text-white/40" />
-              <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Diagnostics Output Core</span>
+        {/* ═══════════ TABS ═══════════ */}
+        <div style={{ display: 'flex', gap: 4, marginBottom: 28, background: C.surface, borderRadius: 12, padding: 4, width: 'fit-content' }}>
+          {['playground', 'docs'].map(t => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              style={{
+                padding: '8px 22px', borderRadius: 9, border: 'none',
+                background: tab === t ? C.purple : 'transparent',
+                color: tab === t ? '#fff' : C.muted,
+                fontWeight: 600, fontSize: 13,
+                transition: 'all 0.2s',
+                textTransform: 'capitalize',
+              }}
+            >{t}</button>
+          ))}
+        </div>
+
+        {/* ═══════════ PLAYGROUND TAB ═══════════ */}
+        {tab === 'playground' && (
+          <div style={{ display: 'grid', gridTemplateColumns: '360px 1fr', gap: 24 }}>
+
+            {/* ── Left panel ── */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+              {/* API Key card */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+                style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 20, padding: 24 }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                  <Lock size={16} color={C.purple} />
+                  <span style={{ fontWeight: 700, color: C.white, fontSize: 15 }}>Your API Key</span>
+                </div>
+                <p style={{ fontSize: 13, color: C.muted, marginBottom: 18, lineHeight: 1.6 }}>
+                  Generate a sandbox key to authenticate your requests. No sign-up needed.
+                </p>
+
+                {apiKey ? (
+                  <div style={{
+                    display: 'flex', alignItems: 'center', gap: 8,
+                    background: C.purpleGlow, border: `1px solid ${C.border}`,
+                    borderRadius: 10, padding: '10px 14px', marginBottom: 16,
+                  }}>
+                    <code style={{ flex: 1, fontSize: 12, color: C.purple, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {apiKey}
+                    </code>
+                    <button onClick={handleCopy} style={{ background: 'none', border: 'none', padding: 4, color: copied ? C.emerald : C.muted }}>
+                      {copied ? <Check size={14} /> : <Copy size={14} />}
+                    </button>
+                  </div>
+                ) : (
+                  <div style={{
+                    height: 44, borderRadius: 10, marginBottom: 16,
+                    background: 'rgba(255,255,255,0.04)', border: `1px dashed ${C.border}`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: C.muted, fontSize: 13,
+                  }}>No key generated yet</div>
+                )}
+
+                <button
+                  onClick={handleGenerateKey}
+                  disabled={isGenerating}
+                  style={{
+                    width: '100%', padding: '11px 0', borderRadius: 11, border: 'none',
+                    background: `linear-gradient(135deg, #8b5cf6, #6d28d9)`,
+                    color: '#fff', fontWeight: 700, fontSize: 14,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                    opacity: isGenerating ? 0.6 : 1, transition: 'opacity 0.2s',
+                  }}
+                >
+                  <RefreshCw size={14} className={isGenerating ? 'spin' : ''} />
+                  {isGenerating ? 'Generating…' : apiKey ? 'Regenerate Key' : 'Generate Free Key'}
+                </button>
+              </motion.div>
+
+              {/* Request builder card */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+                style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 20, padding: 24 }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
+                  <Send size={16} color={C.purple} />
+                  <span style={{ fontWeight: 700, color: C.white, fontSize: 15 }}>Make a Request</span>
+                </div>
+                <p style={{ fontSize: 13, color: C.muted, marginBottom: 18, lineHeight: 1.6 }}>
+                  Pick an endpoint and fire off a live query.
+                </p>
+
+                {/* Endpoint pills */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20 }}>
+                  {['GET /api/v1/trends', 'GET /api/v1/sentiment'].map(ep => (
+                    <button
+                      key={ep}
+                      onClick={() => setSelectedEndpoint(ep)}
+                      style={{
+                        width: '100%', padding: '10px 14px', borderRadius: 10, border: `1px solid`,
+                        borderColor: selectedEndpoint === ep ? C.purple : C.border,
+                        background: selectedEndpoint === ep ? C.purpleGlow : 'transparent',
+                        color: selectedEndpoint === ep ? C.white : C.muted,
+                        textAlign: 'left', fontSize: 13, fontFamily: 'monospace',
+                        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                        transition: 'all 0.2s',
+                      }}
+                    >
+                      <span>
+                        <span style={{ color: C.emerald, fontWeight: 700, marginRight: 8 }}>GET</span>
+                        {ep.replace('GET ', '')}
+                      </span>
+                      {selectedEndpoint === ep && <CheckCircle size={14} color={C.purple} />}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  onClick={handleSendRequest}
+                  disabled={isSending}
+                  style={{
+                    width: '100%', padding: '12px 0', borderRadius: 11, border: 'none',
+                    background: isSending ? 'rgba(16,185,129,0.1)' : `linear-gradient(135deg, #10b981, #059669)`,
+                    color: isSending ? C.emerald : '#fff', fontWeight: 700, fontSize: 14,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                    border: isSending ? `1px solid ${C.emerald}55` : 'none',
+                    transition: 'all 0.2s',
+                  }}
+                >
+                  {isSending
+                    ? <><RefreshCw size={14} style={{ animation: 'spin 1s linear infinite' }} /> Fetching data…</>
+                    : <><Zap size={14} /> Run Request</>
+                  }
+                </button>
+              </motion.div>
+
+              {/* Quick stats */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
+                style={{ display: 'flex', flexDirection: 'column', gap: 10 }}
+              >
+                <StatTile icon={Globe}    label="Nodes Scraped"     value="124 sources" color={C.purple} />
+                <StatTile icon={BarChart2} label="Tokens Analysed"   value="4.85M"       color={C.emerald} />
+                <StatTile icon={Cpu}      label="Avg Latency"        value="< 15ms"      color={C.amber} />
+              </motion.div>
             </div>
-            
-            <div style={{ flex: 1, padding: '1.5rem', overflowY: 'auto', fontFamily: 'monospace', fontSize: '0.8rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' }} className="custom-scrollbar">
-              {terminalLogs.map((log) => (
-                <div key={log.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', lineHeight: '1.4' }}>
-                  <span style={{
-                    color: log.type === 'error' ? '#FF2A54' : log.type === 'success' ? '#00E6FF' : log.type === 'process' ? '#E9D5FF' : 'rgba(255,255,255,0.3)',
-                    fontWeight: 'bold'
+
+            {/* ── Right panel: Results ── */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+              {/* Response header */}
+              <motion.div
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                style={{
+                  background: C.card, border: `1px solid ${C.border}`,
+                  borderRadius: 20, padding: '18px 24px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <Wifi size={18} color={trends ? C.emerald : C.muted} />
+                  <span style={{ fontWeight: 700, color: C.white }}>Live Response</span>
+                  {trends && <Badge color={C.emerald}>200 OK</Badge>}
+                </div>
+                <span style={{ fontSize: 12, color: C.muted }}>
+                  {trends ? `${new Date().toLocaleTimeString()}` : 'No data yet — run a request'}
+                </span>
+              </motion.div>
+
+              {/* Trend cards grid */}
+              <AnimatePresence mode="wait">
+                {trends ? (
+                  <motion.div
+                    key="trends"
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                    style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}
+                  >
+                    {trends.map((t, i) => <TrendCard key={t.topic} trend={t} delay={i * 0.08} />)}
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="empty"
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                    style={{
+                      flex: 1, background: C.card, border: `1px dashed ${C.border}`,
+                      borderRadius: 20, display: 'flex', flexDirection: 'column',
+                      alignItems: 'center', justifyContent: 'center', gap: 14,
+                      padding: 60, textAlign: 'center',
+                    }}
+                  >
+                    <div style={{
+                      width: 64, height: 64, borderRadius: 18,
+                      background: C.purpleGlow, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}>
+                      <TrendingUp size={28} color={C.purple} />
+                    </div>
+                    <div>
+                      <p style={{ fontWeight: 700, fontSize: 17, color: C.white, margin: '0 0 6px' }}>
+                        No results yet
+                      </p>
+                      <p style={{ color: C.muted, fontSize: 14, margin: 0 }}>
+                        Generate a key, pick an endpoint, and click <strong style={{ color: C.white }}>Run Request</strong>.
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Raw JSON accordion */}
+              {trends && (
+                <motion.details
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  style={{
+                    background: '#0d0a1a', border: `1px solid ${C.border}`,
+                    borderRadius: 16, overflow: 'hidden',
+                  }}
+                >
+                  <summary style={{
+                    padding: '14px 20px', cursor: 'pointer', color: C.muted,
+                    fontSize: 13, fontWeight: 600, listStyle: 'none',
+                    display: 'flex', alignItems: 'center', gap: 8,
                   }}>
-                    {log.type === 'error' ? '[-] ' : log.type === 'success' ? '[+] ' : log.type === 'process' ? '[~] ' : '[i] '}
-                  </span>
-                  <span style={{
-                    color: log.type === 'error' ? '#FF2A54' : log.type === 'success' ? '#fff' : log.type === 'process' ? 'rgba(0, 230, 255, 0.7)' : 'rgba(255,255,255,0.5)'
+                    <Layers size={14} /> View raw JSON response
+                  </summary>
+                  <pre style={{
+                    margin: 0, padding: '16px 20px',
+                    color: '#a78bfa', fontSize: 12, lineHeight: 1.7,
+                    overflowX: 'auto',
                   }}>
-                    {log.text}
-                  </span>
+                    {JSON.stringify({ status: 200, data: trends, meta: { timestamp: new Date().toISOString(), nodesScraped: 124 } }, null, 2)}
+                  </pre>
+                </motion.details>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ═══════════ DOCS TAB ═══════════ */}
+        {tab === 'docs' && (
+          <motion.div
+            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+            style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: 28 }}
+          >
+            {/* Sidebar nav */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {['Authentication', 'Endpoints', 'Rate Limits', 'Pricing'].map(s => (
+                <div key={s} style={{
+                  padding: '10px 14px', borderRadius: 10,
+                  color: s === 'Endpoints' ? C.purple : C.muted,
+                  background: s === 'Endpoints' ? C.purpleGlow : 'transparent',
+                  fontSize: 13, fontWeight: 600, cursor: 'default',
+                  display: 'flex', alignItems: 'center', gap: 8,
+                }}>
+                  <ChevronRight size={13} /> {s}
                 </div>
               ))}
             </div>
-          </div>
 
-          {/* JSON Payload Response */}
-          <div style={{ flex: 1.8, background: '#0a0a0a', border: '1px solid rgba(0, 230, 255, 0.1)', borderRadius: '12px', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-            <div style={{ background: '#121212', padding: '0.8rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justify: 'between', alignItems: 'center' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                <Database size={16} className="text-cyan-biomed" />
-                <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: '#00E6FF', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Response JSON payload</span>
+            {/* Docs content */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+              {/* Auth section */}
+              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 20, padding: 28 }}>
+                <h2 style={{ margin: '0 0 12px', color: C.white, fontSize: 18, fontWeight: 700 }}>🔑 Authentication</h2>
+                <p style={{ color: C.muted, fontSize: 14, lineHeight: 1.8, margin: '0 0 16px' }}>
+                  All requests must include your API key in the <code style={{ color: C.purple, background: C.purpleGlow, padding: '1px 6px', borderRadius: 4 }}>x-api-key</code> header.
+                </p>
+                <pre style={{ background: '#0d0a1a', borderRadius: 12, padding: 16, margin: 0, fontSize: 13, color: '#a78bfa', lineHeight: 1.7 }}>
+{`curl https://api.cortextrend.ai/v1/trends \\
+  -H "x-api-key: ct_live_xxxxxxxxxxxxxxxx"`}
+                </pre>
               </div>
-              <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: 'rgba(255,255,255,0.2)' }}>Application/JSON</span>
-            </div>
 
-            <div style={{ flex: 1, padding: '1.5rem', overflowY: 'auto', fontFamily: 'monospace', fontSize: '0.8rem', background: '#030303', color: '#fff' }} className="custom-scrollbar">
-              {apiResponse ? (
-                <pre style={{ margin: 0, color: '#A5F3FC', lineHeight: '1.5' }}>{JSON.stringify(apiResponse, null, 2)}</pre>
-              ) : (
-                <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.15)', flexDirection: 'column', gap: '0.5rem' }}>
-                  <Zap size={24} />
-                  <span>Execute a valid client query to draw telemetry packets.</span>
+              {/* Endpoints section */}
+              <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: 20, padding: 28 }}>
+                <h2 style={{ margin: '0 0 18px', color: C.white, fontSize: 18, fontWeight: 700 }}>📡 Endpoints</h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {endpoints.map(ep => (
+                    <div key={ep.path} style={{
+                      display: 'flex', alignItems: 'center', gap: 16,
+                      padding: '14px 18px', background: C.surface, borderRadius: 12,
+                      border: `1px solid ${C.border}`,
+                    }}>
+                      <Badge color={methodColor[ep.method] || C.purple}>{ep.method}</Badge>
+                      <code style={{ color: C.white, fontSize: 13, flex: 1 }}>{ep.path}</code>
+                      <span style={{ color: C.muted, fontSize: 13 }}>{ep.desc}</span>
+                      <ArrowUpRight size={14} color={C.muted} />
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
+
+              {/* Pricing */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
+                {[
+                  { name: 'Free',       price: '$0',    reqs: '100 req/day',  color: C.muted   },
+                  { name: 'Pro',        price: '$29',   reqs: '10k req/day',  color: C.purple  },
+                  { name: 'Enterprise', price: 'Custom',reqs: 'Unlimited',    color: C.emerald },
+                ].map(plan => (
+                  <div key={plan.name} style={{
+                    background: plan.name === 'Pro' ? `linear-gradient(135deg, #1e1838, #2d1f5e)` : C.card,
+                    border: `1px solid ${plan.name === 'Pro' ? C.purple : C.border}`,
+                    borderRadius: 18, padding: '22px 20px', textAlign: 'center',
+                  }}>
+                    <div style={{ fontSize: 13, color: plan.color, fontWeight: 700, marginBottom: 8 }}>{plan.name}</div>
+                    <div style={{ fontSize: 28, fontWeight: 800, color: C.white, marginBottom: 6 }}>{plan.price}</div>
+                    {plan.price !== 'Custom' && <div style={{ fontSize: 11, color: C.muted }}>/month</div>}
+                    <div style={{ marginTop: 14, fontSize: 13, color: C.muted }}>{plan.reqs}</div>
+                    {plan.name === 'Pro' && <Badge color={C.purple} style={{ marginTop: 12 }}>Most Popular</Badge>}
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-
-        </div>
-
+          </motion.div>
+        )}
       </div>
+
+      {/* ═══════════ TOAST ═══════════ */}
+      <AnimatePresence>
+        {toast && (
+          <motion.div
+            key="toast"
+            initial={{ opacity: 0, y: 30, x: '-50%' }}
+            animate={{ opacity: 1, y: 0,  x: '-50%' }}
+            exit={{ opacity: 0, y: 30, x: '-50%' }}
+            style={{
+              position: 'fixed', bottom: 32, left: '50%',
+              background: toast.type === 'error' ? '#1a0a10' : '#0a1a10',
+              border: `1px solid ${toast.type === 'error' ? C.rose : C.emerald}55`,
+              borderRadius: 14, padding: '13px 22px',
+              display: 'flex', alignItems: 'center', gap: 10,
+              boxShadow: `0 8px 40px ${toast.type === 'error' ? 'rgba(244,63,94,0.25)' : 'rgba(16,185,129,0.25)'}`,
+              zIndex: 99999999,
+              color: toast.type === 'error' ? C.rose : C.emerald,
+              fontWeight: 600, fontSize: 14,
+            }}
+          >
+            {toast.type === 'error' ? <AlertCircle size={16} /> : <CheckCircle size={16} />}
+            {toast.msg}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* spin keyframes */}
+      <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 };
