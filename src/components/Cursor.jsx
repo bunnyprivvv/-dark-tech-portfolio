@@ -23,7 +23,7 @@ const Cursor = () => {
         backgroundColor: cursorState === 'hover' ? 'var(--color-neon-glow-20)' : 'var(--color-neon-blue)',
         border: cursorState === 'hover' ? '1px solid var(--color-neon-blue)' : 'none',
         pointerEvents: 'none', // Critical so it doesn't block clicks!
-        zIndex: 9999,
+        zIndex: 9999999, // Must be above sandbox overlay (99999)
         // Centering calculation using translate
         x: x - size / 2,
         y: y - size / 2,

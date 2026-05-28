@@ -146,8 +146,7 @@ const CortexTrendSandbox = () => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.5rem',
-                  transition: 'all 0.3s ease',
-                  cursor: 'none'
+                  transition: 'all 0.3s ease'
                 }}
               >
                 <RefreshCw size={14} className={isGenerating ? 'animate-spin' : ''} />
@@ -234,7 +233,6 @@ const CortexTrendSandbox = () => {
                   justifyContent: 'center',
                   gap: '0.8rem',
                   transition: 'all 0.3s ease',
-                  cursor: 'none',
                   boxShadow: '0 0 15px rgba(0,230,255,0.08)'
                 }}
               >
