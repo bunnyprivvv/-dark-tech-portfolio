@@ -1,0 +1,61 @@
+# SHAGUN | FULL-STACK DEVELOPER & AI ENGINEER
+## PROFESSIONAL PROFILE
+Shagun is a high-performance Full-Stack Developer and AI Engineer specializing in high-performance digital experiences, reactive spaces, and intelligent machine integrations. With extensive expertise in modern client-side architectures, real-time node communications, and predictive user interfaces, Shagun builds premium digital ecosystems.
+
+---
+
+## OPERATIONAL CAPACITIES & SERVICES
+1. **Web Deployment**
+   - Development of secure, bleeding-edge frontends using React, Vite, and high-performance WebSocket architectures.
+   - Core Stack: React, Framer Motion, Vanilla CSS, Vite.
+   
+2. **Architectural Dev**
+   - Engineering secure backend microservices, real-time gateways, and API infrastructures.
+   - Core Stack: Node.js, Go (Golang), Express, Socket.io, RESTful APIs.
+
+3. **Graphic Rendering**
+   - High-fidelity 3D assets, custom WebGL integrations, and glassmorphism styling.
+   - Core Stack: Three.js, Spline, custom CSS shaders, fluid micro-animations.
+
+---
+
+## FEATURED PROJECTS
+### 1. VitalsVision AI (Health AI Platform)
+- **Description**: A Secure Diagnostic Core integrating HemaScan and AudioTriage modules using bleeding-edge machine learning and predictive DigitalTwin UI modeling to assist medical professionals.
+- **Key Technical Features**:
+  - Real-time Risk Ring rendering
+  - Medical PDF Export
+  - HemaScan / AudioTriage Integration
+  - Contextual AI Response Bot
+- **Architecture Stack**: React, Node.js, Machine Learning API (Python)
+
+### 2. Quantum Nexus (Web Application)
+- **Description**: A high-performance quantum cryptography demonstrator platform running secure WebSockets across distributed global nodes.
+- **Key Technical Features**:
+  - High-Frequency WebSockets
+  - End-to-End Encrypted Data Relays
+  - Real-time Node Monitoring Console
+- **Architecture Stack**: React, Socket.io, Go (Golang)
+
+### 3. Aero Dynamics (3D Interface)
+- **Description**: An advanced web-based 3D configurator designed for aerospace logistics, utilizing WebGL processing power to simulate aerodynamics.
+- **Key Technical Features**:
+  - Spline 3D Real-time Overlays
+  - Physics Calculation Scripts
+  - Interactive Aircraft Configuration Tool
+- **Architecture Stack**: Three.js/Spline, Vite, React
+
+### 4. Cyber Pulse (E-Commerce Solution)
+- **Description**: A dark-mode-only tactical e-commerce platform blending high-end fashion with frictionless Web3 crypto transactions.
+- **Key Technical Features**:
+  - Web3 Wallet Authentication
+  - Global Cart Synchronization
+  - Dark-Tech Thematic Glass UI
+- **Architecture Stack**: Next.js, Ethereum SDK, Vanilla CSS
+
+---
+
+## COMMUNICATIONS & PROTOCOLS
+- **Secure Channel (Email)**: kingsmen99999999999@gmail.com
+- **Secure Access Key (Web3Forms API Integration)**: 6d54206f-8a7a-4024-8657-4408a5fe42b2
+- **Live Portal URL**: https://dark-tech-portfolio-mu.vercel.app

@@ -1,0 +1,70 @@
+import React from 'react';
+import { motion } from 'framer-motion';
+import { usePortfolio } from '../context/PortfolioContext';
+import TerminalCLI from './TerminalCLI';
+
+const Hero = () => {
+  const { setCursorState } = usePortfolio();
+
+  return (
+    <section className="container py-20 mt-12">
+      <motion.div
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }} // smooth ease out
+      >
+        <h1 
+          className="text-glow" 
+          style={{ fontSize: 'clamp(3rem, 8vw, 6rem)', lineHeight: '1', maxWidth: '900px' }}
+        >
+          Hi, I'm <br/> <span className="text-neon">Shagun</span>.
+        </h1>
+        <p className="mt-12" style={{ color: 'var(--color-text-muted)', fontSize: '1.25rem', maxWidth: '700px', lineHeight: '1.6' }}>
+          Full-Stack Developer & AI Engineer. Specializing in the intersection of high-performance architecture and intelligent machine systems to solve complex industrial and medical challenges.
+        </p>
+        
+        <div className="mt-12 flex gap-4">
+          <button
+            onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+            onMouseEnter={() => setCursorState('hover')}
+            onMouseLeave={() => setCursorState('default')}
+            style={{ 
+              padding: '1.2rem 2.5rem', 
+              background: 'var(--color-neon-blue)', 
+              color: 'var(--color-bg)',
+              borderRadius: '8px',
+              fontFamily: 'var(--font-heading)',
+              fontWeight: '600',
+              fontSize: '1.1rem',
+              transition: 'all 0.3s ease',
+            }}
+          >
+            Recent Projects
+          </button>
+          
+          <button
+            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+            onMouseEnter={() => setCursorState('hover')}
+            onMouseLeave={() => setCursorState('default')}
+            className="glass"
+            style={{ 
+              padding: '1.2rem 2.5rem', 
+              color: 'var(--color-text)',
+              fontFamily: 'var(--font-heading)',
+              fontWeight: '500',
+              fontSize: '1.1rem',
+              transition: 'all 0.3s ease'
+            }}
+          >
+            Initialize Contact
+          </button>
+        </div>
+        
+        <TerminalCLI />
+        
+      </motion.div>
+    </section>
+  );
+};
+
+export default Hero;
