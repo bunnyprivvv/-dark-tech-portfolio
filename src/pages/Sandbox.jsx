@@ -41,8 +41,9 @@ const Sandbox = () => {
         left: 0,
         width: '100vw',
         height: '100vh',
-        zIndex: 99999, // Overlay absolute everything!
-        background: '#050505', // Pitch black sandbox base
+        zIndex: 99999,
+        background: '#050505',
+        overflowY: 'auto', // Allow inner content to scroll
       }}
     >
       <button 
