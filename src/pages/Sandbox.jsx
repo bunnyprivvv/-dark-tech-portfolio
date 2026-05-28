@@ -7,6 +7,7 @@ import { usePortfolio } from '../context/PortfolioContext';
 import QuantumNexus from '../deployments/QuantumNexus';
 import AeroDynamics from '../deployments/AeroDynamics';
 import CyberPulse from '../deployments/CyberPulse';
+import CortexTrendSandbox from '../deployments/CortexTrendSandbox';
 
 const Sandbox = () => {
   const { id } = useParams();
@@ -29,6 +30,7 @@ const Sandbox = () => {
       case '2': return <QuantumNexus />;
       case '3': return <AeroDynamics />;
       case '4': return <CyberPulse />;
+      case '5': return <CortexTrendSandbox />;
       default: return <div style={{color: 'red'}}>System Error: Deployment Corrupted</div>;
     }
   };
