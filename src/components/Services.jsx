@@ -24,7 +24,7 @@ const servicesList = [
 ];
 
 const Services = () => {
-  const { setActiveService, setCursorState } = usePortfolio();
+  const { setActiveService, setCursorState, playSynthSound } = usePortfolio();
 
   return (
     <section className="container py-20" style={{ marginTop: '10vh' }}>
@@ -46,11 +46,12 @@ const Services = () => {
               borderRadius: '16px'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(0, 230, 255, 0.06)';
+              e.currentTarget.style.background = 'var(--color-neon-glow-06)';
               e.currentTarget.style.transform = 'translateY(-10px)';
-              e.currentTarget.style.borderColor = 'rgba(0, 230, 255, 0.2)';
+              e.currentTarget.style.borderColor = 'var(--color-neon-glow-20)';
               setActiveService(service.id);
               setCursorState('hover');
+              playSynthSound('hover');
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
@@ -58,6 +59,9 @@ const Services = () => {
               e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)';
               setActiveService(null);
               setCursorState('default');
+            }}
+            onClick={() => {
+              playSynthSound('success');
             }}
           >
             <div style={{ color: 'var(--color-neon-blue)', marginBottom: '0.5rem' }}>{service.icon}</div>

@@ -20,8 +20,8 @@ const Cursor = () => {
         width: size,
         height: size,
         borderRadius: '50%',
-        backgroundColor: cursorState === 'hover' ? 'rgba(0, 230, 255, 0.2)' : 'rgba(0, 230, 255, 0.8)',
-        border: cursorState === 'hover' ? '1px solid #00E6FF' : 'none',
+        backgroundColor: cursorState === 'hover' ? 'var(--color-neon-glow-20)' : 'var(--color-neon-blue)',
+        border: cursorState === 'hover' ? '1px solid var(--color-neon-blue)' : 'none',
         pointerEvents: 'none', // Critical so it doesn't block clicks!
         zIndex: 9999,
         // Centering calculation using translate
