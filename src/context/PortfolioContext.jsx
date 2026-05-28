@@ -5,7 +5,6 @@ const PortfolioContext = createContext();
 export const PortfolioProvider = ({ children }) => {
   const [activeService, setActiveService] = useState(null);
   const [cursorState, setCursorState] = useState('default'); // 'default', 'hover', 'drag', etc.
-  const [systemTheme, setSystemTheme] = useState('neon-blue'); // 'neon-blue' or 'neon-red'
 
   // Web Audio Synth Core for Futuristic UI Sounds (Zero-Weight, Zero-Asset Chimes)
   const playSynthSound = (type) => {
@@ -69,22 +68,6 @@ export const PortfolioProvider = ({ children }) => {
     }
   };
 
-  const toggleSystemTheme = () => {
-    const nextTheme = systemTheme === 'neon-blue' ? 'neon-red' : 'neon-blue';
-    setSystemTheme(nextTheme);
-    playSynthSound('glitch');
-    
-    // Update global CSS root variable values dynamically
-    const root = document.documentElement;
-    if (nextTheme === 'neon-red') {
-      root.style.setProperty('--color-neon-blue', '#FF2A54'); // Cyber Emergency Red
-      root.style.setProperty('--theme-glow', 'rgba(255, 42, 84, 0.4)');
-    } else {
-      root.style.setProperty('--color-neon-blue', '#00E6FF'); // Cyber Classic Blue
-      root.style.setProperty('--theme-glow', 'rgba(0, 230, 255, 0.3)');
-    }
-  };
-
   return (
     <PortfolioContext.Provider
       value={{
@@ -92,8 +75,6 @@ export const PortfolioProvider = ({ children }) => {
         setActiveService,
         cursorState,
         setCursorState,
-        systemTheme,
-        toggleSystemTheme,
         playSynthSound
       }}
     >
