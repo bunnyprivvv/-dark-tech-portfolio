@@ -94,7 +94,7 @@ const ProjectDetail = () => {
           <button 
             onClick={() => {
               if (project.id === 1) {
-                window.location.href = "http://localhost:5180";
+                window.open("https://frontend-lake-nine-62.vercel.app", "_blank");
               } else {
                 navigate('/sandbox/' + project.id);
               }
