@@ -6,6 +6,7 @@
   --color-neon-blue: #00E6FF;
   --color-text: #F3F4F6;
   --color-text-muted: #9CA3AF;
+  --theme-glow: rgba(0, 230, 255, 0.3);
   
   --font-body: 'Plus Jakarta Sans', sans-serif;
   --font-heading: 'Clash Display', sans-serif;
