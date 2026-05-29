@@ -909,6 +909,50 @@ export default function CortexTrendSandbox() {
           {activeView === 'products' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
               
+              {/* Quick Subscription Plan Control Center for easy review */}
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(52, 211, 153, 0.03))',
+                border: `1px solid ${C.border}`, borderRadius: 16, padding: '16px 20px',
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12
+              }}>
+                <div>
+                  <span style={{ fontSize: 9, color: C.purple, fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    Quick Plan Simulator Hub (Bypass restrictions in 1-Click)
+                  </span>
+                  <div style={{ fontSize: 13, fontWeight: 800, color: C.white, marginTop: 2 }}>
+                    Active Plan: <span style={{ color: session.tier === 'free' ? C.textMuted : session.tier === 'pro' ? C.emerald : C.gold }}>
+                      {session.tier.toUpperCase()} TIER
+                    </span>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {session.tier !== 'free' && (
+                    <button
+                      onClick={() => handleUpgrade('free')}
+                      style={{ padding: '6px 12px', borderRadius: 8, border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, fontSize: 10, fontWeight: 700, cursor: 'pointer' }}
+                    >
+                      Downgrade to Free
+                    </button>
+                  )}
+                  {session.tier !== 'pro' && (
+                    <button
+                      onClick={() => handleUpgrade('pro')}
+                      style={{ padding: '6px 12px', borderRadius: 8, border: 'none', background: C.emerald, color: C.bg, fontSize: 10, fontWeight: 850, cursor: 'pointer' }}
+                    >
+                      Unlock Pro Plan
+                    </button>
+                  )}
+                  {session.tier !== 'enterprise' && (
+                    <button
+                      onClick={() => handleUpgrade('enterprise')}
+                      style={{ padding: '6px 12px', borderRadius: 8, border: 'none', background: C.gold, color: C.bg, fontSize: 10, fontWeight: 850, cursor: 'pointer' }}
+                    >
+                      Unlock Enterprise
+                    </button>
+                  )}
+                </div>
+              </div>
+
               {/* Regional selection bar plus Category tab filters */}
               <div className="space-y-4">
                 
