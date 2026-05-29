@@ -479,7 +479,7 @@ export default function CortexTrendSandbox() {
           </div>
 
           {/* Grid of Product Cards */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 20 }}>
             {filteredProducts.map((p, index) => {
               const profitPerUnit = p.retailPrice - p.sourcingCost;
               const marginPercent = Math.round((profitPerUnit / p.retailPrice) * 100);
@@ -665,7 +665,7 @@ export default function CortexTrendSandbox() {
         </div>
 
         {/* 🛠️ Section 4: Tools Dashboard (Calculator & Brand Wizard side-by-side) */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(480px, 1fr))', gap: 24, marginBottom: '60px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24, marginBottom: '60px' }}>
           
           {/* 💰 Left Tool: Interactive Sourcing & Margin Calculator */}
           <div style={{

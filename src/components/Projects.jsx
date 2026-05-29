@@ -29,7 +29,7 @@ const Projects = () => {
           <p className="text-neon" style={{ fontSize: '1.2rem', animation: 'pulse 2s infinite' }}>Establishing Secure Link... Fetching Projects</p>
         </div>
       ) : (
-        <div className="grid gap-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))' }}>
+        <div className="grid gap-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
           {projects.map((proj) => (
             <TiltCard 
               key={proj.id} 

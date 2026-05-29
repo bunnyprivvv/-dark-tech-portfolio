@@ -31,7 +31,7 @@ const Services = () => {
       <h2 style={{ fontSize: '3.5rem', marginBottom: '4rem' }}>
         Operational <span className="text-neon" style={{ fontWeight: '300' }}>Capacities</span>
       </h2>
-      <div className="grid gap-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
+      <div className="grid gap-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
         {servicesList.map((service) => (
           <div
             key={service.id}
