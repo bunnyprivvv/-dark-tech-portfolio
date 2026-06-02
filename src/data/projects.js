@@ -28,5 +28,21 @@ export const projectsDB = [
       { label: "Sentiment Index Scoring Latency", value: "<15ms" },
       { label: "Monthly Recurring Revenue", value: "$1,480/mo (Simulated)" }
     ]
+  },
+  {
+    id: 3,
+    title: 'AetherSwarm AI',
+    category: 'Autonomous Agentic Orchestrator',
+    image: '/health_ai.png', // Fallback display image
+    description: 'A premium, high-fidelity agentic orchestration control center simulating real-time planning, code diff synthesis, security auditing, and QA test matrices across autonomous agent channels.',
+    realWorldUtility: 'Showcases production-grade multi-agent execution workflows, reducing structural token waste, mitigating command injection vulnerabilities, and accelerating software design cycles.',
+    features: ['Typewriter Thought Streams', 'Vector SVG Node Graph', 'Dynamic IDE Code Diff Viewer', 'Low-Latency Web Audio Synthesizer', 'Telemetry Diagnostic Dashboard'],
+    techStack: ['React', 'Vite', 'Vanilla CSS', 'Web Audio API', 'Framer Motion'],
+    metrics: [
+      { label: "Simulated Token Ingestion", value: "4.8k tokens/s" },
+      { label: "Auditor CVE Mitigation Rate", value: "100% Hardened" },
+      { label: "Node Vector Sync Latency", value: "<1.2ms" }
+    ]
   }
 ];
+

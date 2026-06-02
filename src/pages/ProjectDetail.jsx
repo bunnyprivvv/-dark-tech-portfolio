@@ -95,6 +95,8 @@ const ProjectDetail = () => {
             onClick={() => {
               if (project.id === 1) {
                 window.open("https://frontend-lake-nine-62.vercel.app", "_blank");
+              } else if (project.id === 3) {
+                window.open("https://aether-swarm-app.vercel.app", "_blank");
               } else {
                 navigate('/sandbox/' + project.id);
               }
@@ -212,7 +214,6 @@ const ProjectDetail = () => {
               {project.id === 1 && 'Initialize Protocol: Discuss AI Integration'}
               {project.id === 2 && 'Initialize Protocol: Review Cryptographic Security'}
               {project.id === 3 && 'Initialize Protocol: View 3D Performance Metrics'}
-              {project.id === 4 && 'Initialize Protocol: Discuss Web3 Architecture'}
             </button>
           </div>
 
