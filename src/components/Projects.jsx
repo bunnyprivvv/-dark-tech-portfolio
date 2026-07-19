@@ -43,7 +43,7 @@ const Projects = () => {
                 transition: 'opacity 0.4s ease'
               }}
             >
-              <div style={{ background: 'rgba(5, 5, 5, 0.85)', padding: '1.5rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', backdropFilter: 'blur(10px)' }}>
+              <div style={{ background: 'rgba(255, 255, 255, 0.85)', padding: '1.5rem', borderRadius: '12px', border: '1px solid rgba(0, 0, 0, 0.05)', backdropFilter: 'blur(10px)', boxShadow: '0 4px 20px rgba(0, 0, 0, 0.03)' }}>
                 <p style={{ color: 'var(--color-neon-blue)', fontSize: '0.9rem', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                   {proj.category}
                 </p>
@@ -52,7 +52,7 @@ const Projects = () => {
                 {/* Technical Stack Quick Scan Tags */}
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginTop: '1rem' }}>
                   {proj.techStack.slice(0, 3).map((tech, i) => (
-                    <span key={i} style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', border: '1px solid rgba(0, 230, 255, 0.25)', color: 'var(--color-neon-blue)', borderRadius: '4px', background: 'rgba(0, 230, 255, 0.03)' }}>
+                    <span key={i} style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', border: '1px solid var(--color-neon-glow-20)', color: 'var(--color-neon-blue)', borderRadius: '4px', background: 'var(--color-neon-glow-06)' }}>
                       #{tech}
                     </span>
                   ))}

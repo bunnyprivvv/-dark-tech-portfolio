@@ -60,16 +60,16 @@ const TerminalCLI = () => {
       style={{
         marginTop: '3rem',
         padding: '1.5rem',
-        background: 'rgba(0,0,0,0.5)',
+        background: 'rgba(28, 29, 33, 0.95)',
         border: '1px solid var(--color-neon-blue)',
         borderRadius: '8px',
         fontFamily: 'monospace',
-        color: '#00E6FF',
+        color: 'var(--color-neon-blue)',
         height: '250px',
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',
-        boxShadow: 'inset 0 0 20px rgba(0, 230, 255, 0.05)'
+        boxShadow: 'inset 0 0 20px var(--color-neon-glow-06)'
       }}
     >
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>

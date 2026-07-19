@@ -37,7 +37,7 @@ const Hero = () => {
             style={{ 
               padding: '1.2rem 2.5rem', 
               background: 'var(--color-neon-blue)', 
-              color: 'var(--color-bg)',
+              color: '#ffffff',
               borderRadius: '8px',
               fontFamily: 'var(--font-heading)',
               fontWeight: '600',

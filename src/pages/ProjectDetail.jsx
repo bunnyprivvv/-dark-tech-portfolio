@@ -81,7 +81,7 @@ const ProjectDetail = () => {
         <ArrowLeft size={18} /> Back to Home
       </button>
 
-      <div className="glass" style={{ padding: '4rem', background: 'rgba(255, 255, 255, 0.03)', position: 'relative', overflow: 'hidden', borderRadius: '16px' }}>
+      <div className="glass" style={{ padding: '4rem', background: 'var(--color-glass-bg)', position: 'relative', overflow: 'hidden', borderRadius: '16px' }}>
         
         <div style={{ position: 'relative', zIndex: 1 }}>
           <p style={{ color: 'var(--color-neon-blue)', fontSize: '1.2rem', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
@@ -107,7 +107,7 @@ const ProjectDetail = () => {
               marginBottom: '3rem',
               padding: '1rem 2rem', 
               background: 'var(--color-neon-blue)', 
-              color: 'var(--color-bg)',
+              color: '#ffffff',
               borderRadius: '8px',
               fontFamily: 'var(--font-heading)',
               fontWeight: '600',
@@ -124,7 +124,7 @@ const ProjectDetail = () => {
 
           {/* Real-World Business Utility Callout */}
           {project.realWorldUtility && (
-            <div className="glass" style={{ padding: '2rem', borderLeft: '4px solid var(--color-neon-blue)', background: 'rgba(255,255,255,0.02)', marginBottom: '3.5rem', borderRadius: '8px' }}>
+            <div className="glass" style={{ padding: '2rem', borderLeft: '4px solid var(--color-neon-blue)', background: 'var(--color-callout-bg)', marginBottom: '3.5rem', borderRadius: '8px' }}>
               <h4 style={{ fontSize: '0.9rem', color: 'var(--color-neon-blue)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem', fontWeight: '600' }}>
                 Real-World Business Impact & Solution
               </h4>
@@ -137,16 +137,16 @@ const ProjectDetail = () => {
           {/* Quantitative Performance Benchmarks Grid */}
           {project.metrics && (
             <div style={{ marginBottom: '3.5rem' }}>
-              <h3 style={{ fontSize: '1.5rem', color: 'var(--color-text-muted)', marginBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem' }}>
+              <h3 style={{ fontSize: '1.5rem', color: 'var(--color-text-muted)', marginBottom: '1.5rem', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.5rem' }}>
                 Operational & Performance Benchmarks
               </h3>
               <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', marginBottom: '2rem' }}>
                 {project.metrics.map((metric, i) => (
-                  <div key={i} className="glass" style={{ padding: '1.5rem', borderRadius: '12px', border: '1px solid rgba(0, 230, 255, 0.1)', background: 'rgba(0, 230, 255, 0.02)' }}>
+                  <div key={i} className="glass" style={{ padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--color-neon-glow-20)', background: 'var(--color-neon-glow-06)' }}>
                     <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>
                       {metric.label}
                     </p>
-                    <p style={{ color: 'var(--color-neon-blue)', fontSize: '1.8rem', fontWeight: '600', marginTop: '0.5rem', marginBottom: 0, fontFamily: 'var(--font-heading)', textShadow: '0 0 10px rgba(0,230,255,0.2)' }}>
+                    <p style={{ color: 'var(--color-neon-blue)', fontSize: '1.8rem', fontWeight: '600', marginTop: '0.5rem', marginBottom: 0, fontFamily: 'var(--font-heading)', textShadow: '0 0 10px var(--theme-glow)' }}>
                       {metric.value}
                     </p>
                   </div>
@@ -157,7 +157,7 @@ const ProjectDetail = () => {
           
           <div style={{ display: 'flex', gap: '4rem', flexWrap: 'wrap', marginBottom: '4rem' }}>
             <div style={{ flex: 1, minWidth: '250px' }}>
-              <h3 style={{ fontSize: '1.5rem', color: 'var(--color-text-muted)', marginBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem' }}>
+              <h3 style={{ fontSize: '1.5rem', color: 'var(--color-text-muted)', marginBottom: '1.5rem', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.5rem' }}>
                 Key Technical Features
               </h3>
               <ul style={{ display: 'flex', flexDirection: 'column', gap: '1rem', listStyle: 'none' }}>
@@ -171,7 +171,7 @@ const ProjectDetail = () => {
             </div>
 
             <div style={{ flex: 1, minWidth: '250px' }}>
-              <h3 style={{ fontSize: '1.5rem', color: 'var(--color-text-muted)', marginBottom: '1.5rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '0.5rem' }}>
+              <h3 style={{ fontSize: '1.5rem', color: 'var(--color-text-muted)', marginBottom: '1.5rem', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.5rem' }}>
                 Architecture Stack
               </h3>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
@@ -185,7 +185,7 @@ const ProjectDetail = () => {
           </div>
 
           {/* Contextual Action Segment */}
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '3rem', display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start' }}>
+          <div style={{ borderTop: '1px solid var(--color-border)', paddingTop: '3rem', display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'flex-start' }}>
             <h4 style={{ fontSize: '1.1rem', color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>
               Interested in reviewing details or building custom versions?
             </h4>
@@ -200,7 +200,7 @@ const ProjectDetail = () => {
               onMouseLeave={() => setCursorState('default')}
               style={{
                 padding: '1.2rem 2.5rem',
-                background: 'rgba(0, 230, 255, 0.03)',
+                background: 'var(--color-neon-glow-06)',
                 border: '1px solid var(--color-neon-blue)',
                 color: 'var(--color-neon-blue)',
                 borderRadius: '8px',

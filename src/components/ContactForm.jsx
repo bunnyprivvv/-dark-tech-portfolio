@@ -117,7 +117,7 @@ const ContactForm = () => {
             style={{ 
               padding: '1.2rem 2.5rem', 
               background: status === 'success' ? '#10B981' : status === 'error' ? '#EF4444' : 'var(--color-neon-blue)', 
-              color: 'var(--color-bg)',
+              color: '#ffffff',
               borderRadius: '8px',
               fontFamily: 'var(--font-heading)',
               fontWeight: '600',
@@ -142,8 +142,8 @@ const ContactForm = () => {
 };
 
 const inputStyle = {
-  background: 'rgba(255,255,255,0.03)',
-  border: '1px solid rgba(255,255,255,0.1)',
+  background: 'var(--color-input-bg)',
+  border: '1px solid var(--color-input-border)',
   padding: '1rem',
   borderRadius: '8px',
   color: 'var(--color-text)',
