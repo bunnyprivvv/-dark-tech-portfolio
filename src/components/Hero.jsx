@@ -1,6 +1,6 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import Spline from '@splinetool/react-spline';
+import SplineViewer from './SplineViewer';
 import { usePortfolio } from '../context/PortfolioContext';
 import TerminalCLI from './TerminalCLI';
 
@@ -117,16 +117,7 @@ const Hero = () => {
 
           {/* Interactive Spline 3D Viewport */}
           <div style={{ width: '100%', height: '380px', borderRadius: '12px', overflow: 'hidden', position: 'relative', background: 'rgba(0,0,0,0.03)' }}>
-            <Suspense fallback={
-              <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)' }}>
-                <span>Loading 3D Interactive Pipeline...</span>
-              </div>
-            }>
-              <Spline 
-                scene="https://prod.spline.design/FkXfppfybo8wiC-r/scene.splinecode" 
-                style={{ width: '100%', height: '100%' }}
-              />
-            </Suspense>
+            <SplineViewer sceneUrl="https://prod.spline.design/FkXfppfybo8wiC-r/scene.splinecode" />
           </div>
 
           {/* Footer Guide Banner */}
