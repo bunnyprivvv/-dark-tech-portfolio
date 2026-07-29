@@ -40,23 +40,28 @@ const Services = () => {
               position: 'relative', 
               overflow: 'hidden', 
               transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-              background: 'rgba(255,255,255,0.03)',
+              background: 'var(--color-glass-bg)',
+              border: '1px solid var(--color-glass-border)',
+              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.05)',
               padding: '3rem 2rem',
               textAlign: 'center',
-              borderRadius: '16px'
+              borderRadius: '16px',
+              cursor: 'pointer'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'var(--color-neon-glow-06)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.95)';
               e.currentTarget.style.transform = 'translateY(-10px)';
-              e.currentTarget.style.borderColor = 'var(--color-neon-glow-20)';
+              e.currentTarget.style.borderColor = 'var(--color-neon-blue)';
+              e.currentTarget.style.boxShadow = '0 15px 35px var(--theme-glow)';
               setActiveService(service.id);
               setCursorState('hover');
               playSynthSound('hover');
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
+              e.currentTarget.style.background = 'var(--color-glass-bg)';
               e.currentTarget.style.transform = 'translateY(0px)';
-              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.05)';
+              e.currentTarget.style.borderColor = 'var(--color-glass-border)';
+              e.currentTarget.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.05)';
               setActiveService(null);
               setCursorState('default');
             }}
@@ -64,9 +69,9 @@ const Services = () => {
               playSynthSound('success');
             }}
           >
-            <div style={{ color: 'var(--color-neon-blue)', marginBottom: '0.5rem' }}>{service.icon}</div>
-            <h3 style={{ fontSize: '1.8rem', zIndex: 1, fontWeight: '500' }}>{service.title}</h3>
-            <p style={{ color: 'var(--color-text-muted)', fontSize: '1rem', lineHeight: '1.6', marginTop: '0.5rem' }}>
+            <div style={{ color: 'var(--color-neon-blue)', marginBottom: '1rem', background: 'var(--color-neon-glow-06)', padding: '1rem', borderRadius: '50%', border: '1px solid var(--color-neon-glow-20)', display: 'inline-flex' }}>{service.icon}</div>
+            <h3 style={{ fontSize: '1.8rem', color: 'var(--color-text)', fontWeight: '600', marginBottom: '0.5rem' }}>{service.title}</h3>
+            <p style={{ color: '#374151', fontSize: '1.05rem', lineHeight: '1.6' }}>
               {service.description}
             </p>
           </div>
