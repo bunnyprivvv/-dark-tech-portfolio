@@ -10,12 +10,12 @@ const Scene = () => {
         left: 0,
         width: '100vw',
         height: '100vh',
-        zIndex: -1, // Keep it behind everything
+        zIndex: 0,
         pointerEvents: 'none',
       }}
     >
-      <Suspense fallback={<p style={{color: 'rgba(255,255,255,0.2)', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>Initializing 3D Pipeline Scene...</p>}>
-        <Spline scene="https://prod.spline.design/FkXfppfybo8wiC-r/scene.splinecode" />
+      <Suspense fallback={<p style={{color: 'rgba(0,0,0,0.3)', position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>Initializing 3D Pipeline Scene...</p>}>
+        <Spline style={{ width: '100%', height: '100%' }} scene="https://prod.spline.design/FkXfppfybo8wiC-r/scene.splinecode" />
       </Suspense>
     </div>
   );
