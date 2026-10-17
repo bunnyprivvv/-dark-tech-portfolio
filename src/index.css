@@ -2,19 +2,21 @@
 @import url('https://api.fontshare.com/v2/css?f[]=clash-display@200,300,400,500,600,700&display=swap');
 
 :root {
-  --color-bg: #D9D5D1;
-  --color-neon-blue: #E65100; /* Molten industrial orange */
-  --color-text: #1C1D21; /* Dark charcoal slate */
-  --color-text-muted: #5C5E66;
-  --theme-glow: rgba(230, 81, 0, 0.35);
-  --color-neon-glow-06: rgba(230, 81, 0, 0.08);
-  --color-neon-glow-20: rgba(230, 81, 0, 0.25);
-  --color-glass-bg: rgba(255, 255, 255, 0.65);
-  --color-glass-border: rgba(0, 0, 0, 0.08);
-  --color-input-bg: rgba(0, 0, 0, 0.04);
-  --color-input-border: rgba(0, 0, 0, 0.08);
-  --color-callout-bg: rgba(0, 0, 0, 0.02);
-  --color-border: rgba(0, 0, 0, 0.08);
+  --color-bg: #080A10;
+  --color-bg-secondary: #0D111A;
+  --color-neon-blue: #00F0FF; /* Electric Cyber Cyan */
+  --color-accent-amber: #FF6B00; /* High-energy Cyber Amber */
+  --color-text: #F3F4F6; /* Crisp off-white */
+  --color-text-muted: #9CA3AF; /* Slate gray */
+  --theme-glow: rgba(0, 240, 255, 0.4);
+  --color-neon-glow-06: rgba(0, 240, 255, 0.08);
+  --color-neon-glow-20: rgba(0, 240, 255, 0.22);
+  --color-glass-bg: rgba(14, 18, 28, 0.78);
+  --color-glass-border: rgba(0, 240, 255, 0.16);
+  --color-input-bg: rgba(0, 0, 0, 0.55);
+  --color-input-border: rgba(255, 255, 255, 0.12);
+  --color-callout-bg: rgba(0, 240, 255, 0.04);
+  --color-border: rgba(255, 255, 255, 0.08);
   
   --font-body: 'Plus Jakarta Sans', sans-serif;
   --font-heading: 'Clash Display', sans-serif;
@@ -28,15 +30,18 @@
 
 html {
   background-color: var(--color-bg);
+  color-scheme: dark;
 }
 
 body {
-  background-color: transparent;
+  background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-body);
   overflow-x: hidden;
-  /* subtle warm industrial glow overlay */
-  background-image: radial-gradient(circle at 50% -20%, rgba(230, 81, 0, 0.12) 0%, transparent 70%);
+  /* Cyberpunk deep space radial glow */
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.07) 0%, transparent 60%),
+    radial-gradient(circle at 80% 50%, rgba(255, 107, 0, 0.04) 0%, transparent 50%);
   background-attachment: fixed;
 }
 
@@ -61,21 +66,27 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .text-glow {
-  text-shadow: 0 0 15px rgba(230, 81, 0, 0.25), 0 0 30px rgba(230, 81, 0, 0.1);
+  text-shadow: 0 0 20px rgba(0, 240, 255, 0.4), 0 0 40px rgba(0, 240, 255, 0.15);
 }
 
 .text-neon {
   color: var(--color-neon-blue);
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.5);
+}
+
+.text-amber {
+  color: var(--color-accent-amber);
+  text-shadow: 0 0 12px rgba(255, 107, 0, 0.5);
 }
 
 /* Glassmorphism setup */
 .glass {
   background: var(--color-glass-bg);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--color-glass-border);
   border-radius: 16px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.04);
+  box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.6);
 }
 
 a {
@@ -83,19 +94,20 @@ a {
   text-decoration: none;
 }
 
-/* Custom Scrollbar for Lenis if needed */
+/* Custom Scrollbar for Lenis */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 7px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-bg);
+  background: #080A10;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 240, 255, 0.25);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-neon-blue);
+  box-shadow: 0 0 10px var(--color-neon-blue);
 }
 
 /* Basic utility layout classes to substitute for not having Tailwind */

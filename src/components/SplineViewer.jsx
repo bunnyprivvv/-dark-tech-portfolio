@@ -10,26 +10,36 @@ const SplineViewer = ({ sceneUrl = "https://prod.spline.design/FkXfppfybo8wiC-r/
     let app = null;
     let isMounted = true;
 
+    // Safety timeout: Auto-dismiss loader after 2.5s so interface is always visible!
+    const timer = setTimeout(() => {
+      if (isMounted) setLoading(false);
+    }, 2500);
+
     if (canvasRef.current) {
-      app = new Application(canvasRef.current);
-      app
-        .load(sceneUrl)
-        .then(() => {
-          if (isMounted) {
-            setLoading(false);
-          }
-        })
-        .catch((err) => {
-          console.warn('Spline runtime load note:', err);
-          if (isMounted) {
-            setError(true);
-            setLoading(false);
-          }
-        });
+      try {
+        app = new Application(canvasRef.current);
+        app
+          .load(sceneUrl)
+          .then(() => {
+            if (isMounted) {
+              setLoading(false);
+            }
+          })
+          .catch((err) => {
+            console.warn('Spline runtime load note:', err);
+            if (isMounted) {
+              setError(true);
+              setLoading(false);
+            }
+          });
+      } catch (e) {
+        if (isMounted) setLoading(false);
+      }
     }
 
     return () => {
       isMounted = false;
+      clearTimeout(timer);
       if (app) {
         try {
           app.dispose();
@@ -41,7 +51,19 @@ const SplineViewer = ({ sceneUrl = "https://prod.spline.design/FkXfppfybo8wiC-r/
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%', minHeight: '300px', ...style }} className={className}>
       {loading && (
-        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.02)', color: 'var(--color-text-muted)', fontFamily: 'monospace', fontSize: '0.85rem', zIndex: 2 }}>
+        <div style={{ 
+          position: 'absolute', 
+          inset: 0, 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          background: 'rgba(10, 12, 18, 0.4)', 
+          color: 'var(--color-neon-blue)', 
+          fontFamily: 'monospace', 
+          fontSize: '0.85rem', 
+          zIndex: 2,
+          backdropFilter: 'blur(4px)'
+        }}>
           <span>Initializing 3D Pipeline Scene...</span>
         </div>
       )}

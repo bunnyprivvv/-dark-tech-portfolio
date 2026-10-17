@@ -31,9 +31,24 @@ export const projectsDB = [
   },
   {
     id: 3,
+    title: 'ZeroGravity AI',
+    category: '100% Offline Agentic AI IDE',
+    image: '/zerogravity_logo.jpg',
+    description: 'A local, offline-first agentic coding suite and desktop IDE software that runs autonomous ReAct planning loops, file editing, and terminal command execution using local Ollama LLMs with zero cloud dependency.',
+    realWorldUtility: 'Empowers developers and enterprise engineers to build, plan, and debug full-stack software completely offline on their device, guaranteeing zero code leaks and 100% data privacy.',
+    features: ['Autonomous ReAct Planning Mode', 'Local Ollama LLM Bridge', 'Multi-File Code Diff Engine', 'Interactive Markdown Artifact Viewer', 'Embedded Web App Preview'],
+    techStack: ['React 18', 'Vite', 'Node.js', 'Ollama', 'WebSockets', 'Framer Motion'],
+    metrics: [
+      { label: "Cloud Data Transmission", value: "0 KB (100% Local)" },
+      { label: "Vite Build Time", value: "3.42s" },
+      { label: "Agentic Tool Execution Speed", value: "<15ms" }
+    ]
+  },
+  {
+    id: 4,
     title: 'AetherSwarm AI',
     category: 'Autonomous Agentic Orchestrator',
-    image: '/health_ai.png', // Fallback display image
+    image: '/health_ai.png',
     description: 'A premium, high-fidelity agentic orchestration control center simulating real-time planning, code diff synthesis, security auditing, and QA test matrices across autonomous agent channels.',
     realWorldUtility: 'Showcases production-grade multi-agent execution workflows, reducing structural token waste, mitigating command injection vulnerabilities, and accelerating software design cycles.',
     features: ['Typewriter Thought Streams', 'Vector SVG Node Graph', 'Dynamic IDE Code Diff Viewer', 'Low-Latency Web Audio Synthesizer', 'Telemetry Diagnostic Dashboard'],
@@ -45,4 +60,5 @@ export const projectsDB = [
     ]
   }
 ];
+
 

@@ -91,11 +91,20 @@ const ProjectDetail = () => {
             {project.title}
           </h1>
 
+          {/* Hero Banner Image */}
+          {project.image && (
+            <div style={{ marginBottom: '2.5rem', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(0, 230, 255, 0.3)', maxHeight: '350px' }}>
+              <img src={project.image} alt={project.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            </div>
+          )}
+
           <button 
             onClick={() => {
               if (project.id === 1) {
                 window.open("https://frontend-lake-nine-62.vercel.app", "_blank");
               } else if (project.id === 3) {
+                window.open("http://localhost:3000", "_blank");
+              } else if (project.id === 4) {
                 window.open("https://aether-swarm-app.vercel.app", "_blank");
               } else {
                 navigate('/sandbox/' + project.id);
@@ -115,8 +124,9 @@ const ProjectDetail = () => {
               transition: 'all 0.3s ease',
             }}
           >
-            Launch Live Deployment
+            Launch Live Application
           </button>
+
           
           <p style={{ fontSize: '1.3rem', color: 'var(--color-text)', maxWidth: '800px', lineHeight: '1.6', marginBottom: '3rem' }}>
             {project.description}

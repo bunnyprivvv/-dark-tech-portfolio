@@ -6,12 +6,12 @@ import { PortfolioProvider } from './context/PortfolioContext';
 
 import Cursor from './components/Cursor';
 import Scene from './components/Scene';
+import Navbar from './components/Navbar';
 import Home from './pages/Home';
 
 import ProjectDetail from './pages/ProjectDetail';
 import Sandbox from './pages/Sandbox';
 
-// Separate component for routes to use useLocation hook
 const AnimatedRoutes = () => {
   const location = useLocation();
   
@@ -28,7 +28,6 @@ const AnimatedRoutes = () => {
 
 function App() {
   useEffect(() => {
-    // Initialize Lenis exactly per documentation for buttery 60fps smooth scroll
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), 
@@ -59,10 +58,13 @@ function App() {
         {/* Custom cursor overlay */}
         <Cursor />
         
-        {/* Spline 3D Robot fixed background */}
+        {/* Navbar */}
+        <Navbar />
+
+        {/* 3D Scene Background */}
         <Scene />
         
-        {/* Scrollable Page Content routed underneath AnimatePresence */}
+        {/* Page Content */}
         <AnimatedRoutes />
       </Router>
     </PortfolioProvider>

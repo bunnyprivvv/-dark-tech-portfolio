@@ -43,24 +43,34 @@ const Projects = () => {
                 transition: 'opacity 0.4s ease'
               }}
             >
-              <div style={{ background: 'rgba(255, 255, 255, 0.85)', padding: '1.5rem', borderRadius: '12px', border: '1px solid rgba(0, 0, 0, 0.05)', backdropFilter: 'blur(10px)', boxShadow: '0 4px 20px rgba(0, 0, 0, 0.03)' }}>
-                <p style={{ color: 'var(--color-neon-blue)', fontSize: '0.9rem', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                  {proj.category}
-                </p>
-                <h3 style={{ fontSize: '2.5rem', margin: 0, fontWeight: '500' }}>{proj.title}</h3>
+              <div style={{ background: 'rgba(10, 14, 24, 0.9)', padding: '1.75rem', borderRadius: '12px', border: '1px solid rgba(0, 240, 255, 0.2)', backdropFilter: 'blur(16px)', boxShadow: '0 8px 30px rgba(0, 0, 0, 0.7)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                  <p style={{ color: 'var(--color-neon-blue)', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: 'monospace', margin: 0 }}>
+                    {proj.category}
+                  </p>
+                  <span style={{ color: 'var(--color-accent-amber)', fontSize: '0.75rem', fontFamily: 'monospace' }}>
+                    0{proj.id} // ACTIVE
+                  </span>
+                </div>
+                <h3 style={{ fontSize: '2.2rem', margin: 0, fontWeight: '600', color: '#FFFFFF' }}>{proj.title}</h3>
                 
                 {/* Technical Stack Quick Scan Tags */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginTop: '1rem' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginTop: '1.2rem' }}>
                   {proj.techStack.slice(0, 3).map((tech, i) => (
-                    <span key={i} style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', border: '1px solid var(--color-neon-glow-20)', color: 'var(--color-neon-blue)', borderRadius: '4px', background: 'var(--color-neon-glow-06)' }}>
+                    <span key={i} style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', border: '1px solid rgba(0, 240, 255, 0.3)', color: 'var(--color-neon-blue)', borderRadius: '4px', background: 'rgba(0, 240, 255, 0.08)', fontFamily: 'monospace' }}>
                       #{tech}
                     </span>
                   ))}
                   {proj.techStack.length > 3 && (
-                    <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', color: 'var(--color-text-muted)' }}>
+                    <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', color: 'var(--color-text-muted)', fontFamily: 'monospace' }}>
                       +{proj.techStack.length - 3} more
                     </span>
                   )}
+                </div>
+
+                <div style={{ marginTop: '1.2rem', display: 'flex', alignItems: 'center', gap: '0.4rem', color: 'var(--color-neon-blue)', fontSize: '0.85rem', fontWeight: 600 }}>
+                  <span>Inspect Case Study</span>
+                  <span>&rarr;</span>
                 </div>
               </div>
             </TiltCard>
