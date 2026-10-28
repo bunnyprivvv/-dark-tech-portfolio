@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dark-tech-portfolio-mu.vercel.app/sitemap.xml
